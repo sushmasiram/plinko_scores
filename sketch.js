@@ -3,11 +3,10 @@ var Engine = Matter.Engine,
   Events = Matter.Events,
   Bodies = Matter.Bodies;
  
-var particles = [];
 var plinkos = [];
 var divisions = [];
 
-var particle;
+var particle=[];
 var turn = 5;
 
 var divisionHeight=300;
@@ -54,8 +53,7 @@ function draw() {
 
   Engine.update(engine);
 
-  //line(0, 500, 800, 500);
-  
+ 
   fill("white");
   text("500", 25, 550);
   text("500", 100, 550);
@@ -74,39 +72,48 @@ function draw() {
     plinkos[i].display();
   }
 
-  /*if(frameCount%60===0){
-    particles.push(new Particle(random(width/2-30, width/2+30), 10,10));
-  }
- 
-  for (var j = 0; j < particles.length; j++){
-    particles[j].display();
-  }*/
 
   for (var k = 0; k < divisions.length; k++){
     divisions[k].display();
   }
-
-  if(particle!=null){
-   //mousePressed();
-   particle.display();
-    
-    if(particle.body.position.y > 760){
-      if(particle.body.position.x < 300){
-        score= score+500;
-        particle=null;
-         if(turn>=5){
-          gameState= "end";
-        }
+ // console.log(particle.length)
+  if(particle.length){
+    for (var i =0;i<particle.length;i++){
+      particle[i].display();
+     
+      if(particle[i].body.position.y === 760){
+          if(particle[i].body.position.x < 300){
+            score= score + 500;
+          }else if(particle[i].body.position.x > 301 && particle[i].body.position.x < 600){
+            score = score + 100
+          }else if(particle[i].body.position.x > 601 && particle[i].body.position.x < 900){
+            score = score + 200
+          }
+          //World.remove(world,particle[i])
       }
+    } 
+        if(particle.length>5){
+            particle=[];
+            gameState= "end";        
+          }
     }
+
+    if(gameState === "end"){
+      push()
+      textSize(30)
+      text("Game Over!", width/2-100, height/2)
+      textSize(15)
+      text("Press Space to restart the game", width/2-100, height/2+50)
+    }
+    
   }
-}
+
+//if x is less than 300 - 500, x btw 301 and 600 100, x between 601 and 900 200 points
 
 function mousePressed(){
-  //console.log("pressed")
+
   if(gameState != "end"){
-   turn++;
-   //console.log(turn)
-   particle= new Particle(mouseX, 10, 10, 10);
+   
+   particle.push(new Particle(mouseX, 10, 10, 10));
   }
 }
