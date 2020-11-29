@@ -7,14 +7,13 @@ var plinkos = [];
 var divisions = [];
 
 var particle=[];
+var scoreAdded=[];
 var turn = 5;
 
 var divisionHeight=300;
 var score =0;
 
-var gameState= play;
-var end= 0;
-var play= 1;
+var gameState= "play";
 
 function setup() {
   createCanvas(800, 800);
@@ -76,26 +75,30 @@ function draw() {
   for (var k = 0; k < divisions.length; k++){
     divisions[k].display();
   }
- // console.log(particle.length)
+
   if(particle.length){
     for (var i =0;i<particle.length;i++){
+
+      
       particle[i].display();
      
-      if(particle[i].body.position.y === 760){
-          if(particle[i].body.position.x < 300){
+      if(particle[i].body.position.y > 760 && !scoreAdded[i]){
+        scoreAdded[i] = true
+          if(particle[i].body.position.x < 300 && particle[i].body.position.x > 0){
             score= score + 500;
           }else if(particle[i].body.position.x > 301 && particle[i].body.position.x < 600){
             score = score + 100
           }else if(particle[i].body.position.x > 601 && particle[i].body.position.x < 900){
             score = score + 200
           }
-          //World.remove(world,particle[i])
-      }
-    } 
-        if(particle.length>5){
-            particle=[];
+          
+          //give frame delay
+          if(particle.length>4){            
             gameState= "end";        
           }
+      }
+    } 
+        
     }
 
     if(gameState === "end"){
@@ -115,5 +118,20 @@ function mousePressed(){
   if(gameState != "end"){
    
    particle.push(new Particle(mouseX, 10, 10, 10));
+   scoreAdded.push(false)
+  }
+}
+
+function  keyPressed(){
+  if (keyCode === 32){
+
+    for (var i =0; i <particle.length;i=i+1){
+      World.remove(world,particle[i].body)
+    }
+    // alternative code to remove all the particles from world.
+    //particle.map(i => {World.remove(world,i.body)})
+    gameState = "play"
+    particle=[];
+    scoreAdded = [];
   }
 }
